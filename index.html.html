@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>SafePulse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@700;800;900&family=Barlow+Condensed:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gold: #FFB800;
+      --gold-bright: #FFC930;
+      --gold-glow: rgba(255, 184, 0, 0.5);
+      --gold-dim: rgba(255, 184, 0, 0.15);
+      --bg: #0a0a0a;
+      --white: #ffffff;
+      --city-color: rgba(255, 184, 0, 0.18);
+    }
+
+    html, body {
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      border-radius: 40px;
+      box-shadow: 0 0 0 1px #222, 0 30px 80px rgba(0,0,0,0.8);
+      transition: opacity 0.5s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* === BACKGROUND NOISE + RADIAL GLOW === */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 38%, rgba(255,184,0,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 60% at 50% 90%, rgba(255,184,0,0.08) 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    /* === CITY SKYLINE === */
+    .city {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      z-index: 1;
+    }
+
+    .city svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* === HORIZONTAL GLOW LINE BELOW CITY === */
+    .city-glow-line {
+      position: absolute;
+      bottom: 88px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), var(--gold), transparent);
+      filter: blur(1px);
+      opacity: 0.7;
+      z-index: 2;
+    }
+
+    /* === MAIN CONTENT === */
+    .content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-top: -60px;
+    }
+
+    /* === RADAR RINGS === */
+    .radar-wrapper {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      animation: ring-pulse 3s ease-in-out infinite;
+    }
+
+    .ring-1 { width: 260px; height: 260px; animation-delay: 0s; }
+    .ring-2 { width: 200px; height: 200px; animation-delay: 0.4s; border-color: rgba(255,184,0,0.22); }
+
+    @keyframes ring-pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.025); }
+    }
+
+    /* === ICON CIRCLE === */
+    .icon-circle {
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle at 50% 40%, rgba(255,184,0,0.18) 0%, rgba(255,184,0,0.06) 60%, transparent 100%);
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,184,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow:
+        0 0 40px rgba(255,184,0,0.15),
+        inset 0 0 30px rgba(255,184,0,0.08);
+      animation: icon-glow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes icon-glow {
+      from { box-shadow: 0 0 30px rgba(255,184,0,0.12), inset 0 0 20px rgba(255,184,0,0.06); }
+      to   { box-shadow: 0 0 60px rgba(255,184,0,0.28), inset 0 0 40px rgba(255,184,0,0.12); }
+    }
+
+    /* === SIREN ICON (SVG inline) === */
+    .siren-svg {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(0 0 12px rgba(255,184,0,0.8)) drop-shadow(0 0 30px rgba(255,184,0,0.4));
+      animation: siren-flash 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes siren-flash {
+      from { filter: drop-shadow(0 0 10px rgba(255,184,0,0.7)) drop-shadow(0 0 24px rgba(255,184,0,0.35)); }
+      to   { filter: drop-shadow(0 0 22px rgba(255,200,0,1.0)) drop-shadow(0 0 50px rgba(255,184,0,0.6)); }
+    }
+
+    /* === LOGO TEXT === */
+    .logo-text {
+      font-family: 'Barlow', sans-serif;
+      font-size: 52px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1;
+      text-align: center;
+      animation: fade-up 1s ease 0.2s both;
+    }
+
+    .logo-text .safe { color: var(--white); }
+    .logo-text .pulse { color: var(--gold); }
+
+    /* === PULSE LINE DIVIDER === */
+    .pulse-line {
+      margin: 14px 0 12px;
+      width: 280px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      animation: fade-up 1s ease 0.4s both;
+    }
+
+    .pulse-line svg {
+      width: 100%;
+      height: 20px;
+      overflow: visible;
+    }
+
+    /* === TAGLINE === */
+    .tagline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.5px;
+      text-align: center;
+      animation: fade-up 1s ease 0.6s both;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-out {
+      opacity: 0 !important;
+    }
+
+    .skip-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .skip-btn:hover {
+      color: var(--gold);
+      background: rgba(255, 184, 0, 0.1);
+      border-color: rgba(255, 184, 0, 0.3);
+    }
+
+    /* Responsive — on very small screens still look good */
+    @media (max-width: 420px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100dvh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <!-- Skip Button -->
+    <a href="safepulse-register (3).html" class="skip-btn">Saltar ›</a>
+
+    <!-- Background glow handled by ::before pseudo -->
+
+    <!-- City Skyline -->
+    <div class="city">
+      <svg viewBox="0 0 390 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="cityGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,184,0,0.22)"/>
+            <stop offset="100%" stop-color="rgba(255,184,0,0.04)"/>
+          </linearGradient>
+          <!-- Dot matrix mask for buildings -->
+          <pattern id="dots" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
+            <rect width="1.5" height="1.5" fill="rgba(255,184,0,0.55)" rx="0.4"/>
+          </pattern>
+        </defs>
+
+        <!-- City silhouette path -->
+        <path d="
+          M0,220
+          L0,150
+          L18,150 L18,130 L26,130 L26,110 L34,110 L34,130 L42,130 L42,150
+          L50,150 L50,100 L58,100 L58,80 L62,80 L62,70 L66,70 L66,80 L70,80 L70,100 L78,100 L78,150
+          L85,150 L85,120 L100,120 L100,150
+          L108,150 L108,90 L116,90 L116,75 L122,75 L122,60 L128,60 L128,75 L134,75 L134,90 L142,90 L142,150
+          L150,150 L150,130 L162,130 L162,150
+          L170,150 L170,95 L178,95 L178,82 L182,82 L182,72 L186,72 L186,60 L190,60 L190,72 L194,72 L194,82 L198,82 L198,95 L206,95 L206,150
+          L214,150 L214,118 L226,118 L226,150
+          L234,150 L234,85 L242,85 L242,68 L248,68 L248,55 L254,55 L254,68 L260,68 L260,85 L268,85 L268,150
+          L276,150 L276,125 L290,125 L290,150
+          L298,150 L298,105 L306,105 L306,88 L312,88 L312,78 L316,78 L316,88 L322,88 L322,105 L330,105 L330,150
+          L338,150 L338,135 L350,135 L350,150
+          L358,150 L358,115 L366,115 L366,100 L372,100 L372,115 L378,115 L378,150
+          L390,150 L390,220 Z
+        " fill="url(#cityGrad)"/>
+
+        <!-- Dot overlay on buildings -->
+        <clipPath id="buildingClip">
+          <path d="
+            M0,220 L0,150
+            L18,150 L18,130 L26,130 L26,110 L34,110 L34,130 L42,130 L42,150
+            L50,150 L50,100 L58,100 L58,80 L62,80 L62,70 L66,70 L66,80 L70,80 L70,100 L78,100 L78,150
+            L85,150 L85,120 L100,120 L100,150
+            L108,150 L108,90 L116,90 L116,75 L122,75 L122,60 L128,60 L128,75 L134,75 L134,90 L142,90 L142,150
+            L150,150 L150,130 L162,130 L162,150
+            L170,150 L170,95 L178,95 L178,82 L182,82 L182,72 L186,72 L186,60 L190,60 L190,72 L194,72 L194,82 L198,82 L198,95 L206,95 L206,150
+            L214,150 L214,118 L226,118 L226,150
+            L234,150 L234,85 L242,85 L242,68 L248,68 L248,55 L254,55 L254,68 L260,68 L260,85 L268,85 L268,150
+            L276,150 L276,125 L290,125 L290,150
+            L298,150 L298,105 L306,105 L306,88 L312,88 L312,78 L316,78 L316,88 L322,88 L322,105 L330,105 L330,150
+            L338,150 L338,135 L350,135 L350,150
+            L358,150 L358,115 L366,115 L366,100 L372,100 L372,115 L378,115 L378,150
+            L390,150 L390,220 Z
+          "/>
+        </clipPath>
+        <rect x="0" y="0" width="390" height="220" fill="url(#dots)" clip-path="url(#buildingClip)" opacity="0.7"/>
+
+        <!-- Glow horizon line -->
+        <line x1="0" y1="150" x2="390" y2="150" stroke="rgba(255,184,0,0.35)" stroke-width="1"/>
+        <line x1="0" y1="150" x2="390" y2="150" stroke="rgba(255,184,0,0.15)" stroke-width="6" style="filter:blur(3px)"/>
+      </svg>
+    </div>
+
+    <div class="city-glow-line"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+      <!-- Radar + Icon -->
+      <div class="radar-wrapper">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="icon-circle">
+          <!-- Inline Siren SVG -->
+          <svg class="siren-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <!-- Sound waves left -->
+            <path d="M22 38 Q14 50 22 62" stroke="#FFB800" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M13 30 Q1 50 13 70" stroke="#FFB800" stroke-width="3.5" stroke-linecap="round" opacity="0.6"/>
+            <!-- Sound waves right -->
+            <path d="M78 38 Q86 50 78 62" stroke="#FFB800" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M87 30 Q99 50 87 70" stroke="#FFB800" stroke-width="3.5" stroke-linecap="round" opacity="0.6"/>
+            <!-- Siren body -->
+            <rect x="30" y="68" width="40" height="10" rx="4" fill="#FFB800"/>
+            <!-- Siren dome -->
+            <path d="M35 68 Q35 42 50 38 Q65 42 65 68 Z" fill="#FFB800"/>
+            <!-- Dome highlight -->
+            <path d="M42 55 Q42 44 50 41" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Light top -->
+            <circle cx="50" cy="36" r="7" fill="#FFB800"/>
+            <circle cx="50" cy="36" r="4" fill="#FFF3AA"/>
+            <!-- Rays top -->
+            <line x1="50" y1="26" x2="50" y2="22" stroke="#FFB800" stroke-width="3" stroke-linecap="round"/>
+            <line x1="58" y1="28" x2="61" y2="25" stroke="#FFB800" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="42" y1="28" x2="39" y2="25" stroke="#FFB800" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Logo -->
+      <div class="logo-text">
+        <span class="safe">Safe</span><span class="pulse">Pulse</span>
+      </div>
+
+      <!-- Pulse ECG line -->
+      <div class="pulse-line">
+        <svg viewBox="0 0 280 20" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(255,184,0,0)"/>
+              <stop offset="25%" stop-color="#FFB800"/>
+              <stop offset="75%" stop-color="#FFB800"/>
+              <stop offset="100%" stop-color="rgba(255,184,0,0)"/>
+            </linearGradient>
+          </defs>
+          <polyline
+            points="0,10 60,10 72,10 78,2 82,18 86,6 90,14 96,10 220,10 280,10"
+            fill="none"
+            stroke="url(#lineGrad)"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+
+      <!-- Tagline -->
+      <p class="tagline">Tu seguridad está en nuestras manos</p>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const skipBtn = document.querySelector(".skip-btn");
+      const frame = document.querySelector(".phone-frame");
+
+      function navigateToRegister() {
+        frame.classList.add("fade-out");
+        setTimeout(() => {
+          window.location.href = "safepulse-register (3).html";
+        }, 500);
+      }
+
+      // Auto redirect after 3.5 seconds
+      const timer = setTimeout(navigateToRegister, 3500);
+
+      // Handle manual click
+      if (skipBtn) {
+        skipBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          clearTimeout(timer);
+          navigateToRegister();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

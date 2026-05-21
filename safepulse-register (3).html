@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>SafePulse – Crea tu cuenta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:        #FFB800;
+      --gold-bright: #FFC930;
+      --gold-dim:    rgba(255,184,0,0.15);
+      --gold-glow:   rgba(255,184,0,0.35);
+      --bg:          #0d0d0d;
+      --card:        #161616;
+      --border:      #2a2a2a;
+      --border-focus:#FFB800;
+      --border-error:#e53935;
+      --border-ok:   #43a047;
+      --text:        #ffffff;
+      --text-muted:  rgba(255,255,255,0.55);
+      --valid:       #43a047;
+      --invalid:     #e53935;
+      --input-bg:    #141414;
+      --icon-color:  #FFB800;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    /* ── Phone frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      border-radius: 40px;
+      box-shadow: 0 0 0 1px #222, 0 30px 80px rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding-bottom: 32px;
+    }
+
+    /* corner decorative rings */
+    .phone::before {
+      content:'';
+      position:absolute;
+      top:-60px; right:-60px;
+      width:200px; height:200px;
+      border-radius:50%;
+      border:1px solid rgba(255,184,0,0.12);
+      pointer-events:none;
+    }
+    .phone::after {
+      content:'';
+      position:absolute;
+      top:-30px; right:-30px;
+      width:130px; height:130px;
+      border-radius:50%;
+      border:1px solid rgba(255,184,0,0.08);
+      pointer-events:none;
+    }
+
+    /* ── Scrollable content ── */
+    .scroll {
+      overflow-y: auto;
+      flex:1;
+      padding: 40px 24px 0;
+      scrollbar-width: none;
+    }
+    .scroll::-webkit-scrollbar { display:none; }
+
+    /* ── Header ── */
+    .header {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:32px;
+    }
+
+    /* Shield icon */
+    .shield-wrap {
+      width:72px; height:72px;
+      display:flex; align-items:center; justify-content:center;
+      animation: shield-glow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes shield-glow {
+      from { filter: drop-shadow(0 0 6px rgba(255,184,0,0.5)); }
+      to   { filter: drop-shadow(0 0 18px rgba(255,184,0,0.9)); }
+    }
+
+    .logo-text {
+      font-size:42px; font-weight:900; letter-spacing:-1px; line-height:1;
+    }
+    .logo-text .safe  { color:#fff; }
+    .logo-text .pulse { color:var(--gold); }
+
+    .tagline {
+      display:flex; align-items:center; gap:10px;
+      font-size:13px; color:var(--text-muted); letter-spacing:.3px;
+    }
+    .tagline-line {
+      width:24px; height:1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .tagline-line.r { transform:scaleX(-1); }
+
+    /* ── Section title ── */
+    .section-title {
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:4px;
+    }
+    .section-title h2 {
+      font-size:22px; font-weight:800; color:#fff;
+    }
+
+    .section-sub {
+      font-size:13.5px; color:var(--text-muted);
+      margin-bottom:24px;
+    }
+
+    /* ── Form fields ── */
+    .field { margin-bottom:16px; }
+
+    .field-label {
+      font-size:12.5px; font-weight:700;
+      color:#fff; letter-spacing:.3px;
+      margin-bottom:6px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .field-label::after {
+      content:'';
+      flex:1; height:1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .input-wrap {
+      display:flex; align-items:center; gap:12px;
+      background:var(--input-bg);
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      padding:0 16px;
+      height:56px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input-wrap:focus-within {
+      border-color:var(--border-focus);
+      box-shadow:0 0 0 3px rgba(255,184,0,0.12);
+    }
+    .input-wrap.valid   { border-color:var(--border-ok); }
+    .input-wrap.invalid { border-color:var(--border-error); box-shadow:0 0 0 3px rgba(229,57,53,0.10); }
+
+    .input-icon { flex-shrink:0; color:var(--icon-color); }
+
+    .input-wrap input {
+      flex:1; background:transparent; border:none; outline:none;
+      font-family:'Barlow',sans-serif;
+      font-size:16px; font-weight:500;
+      color:#fff; caret-color:var(--gold);
+    }
+    .input-wrap input::placeholder { color:rgba(255,255,255,0.25); }
+
+    .status-icon { flex-shrink:0; }
+
+    .field-msg {
+      margin-top:5px;
+      font-size:12px; font-weight:600;
+      padding-left:4px;
+    }
+    .field-msg.ok  { color:var(--valid); }
+    .field-msg.err { color:var(--invalid); }
+
+    /* ── Info banner ── */
+    .info-banner {
+      background:#1a1a1a;
+      border-radius:14px;
+      padding:16px;
+      display:flex; align-items:flex-start; gap:14px;
+      margin-bottom:24px;
+      margin-top:8px;
+    }
+    .info-banner-icon { flex-shrink:0; color:var(--gold); margin-top:2px; }
+    .info-banner h4 { font-size:13.5px; font-weight:800; color:#fff; margin-bottom:3px; }
+    .info-banner p  { font-size:12px; color:var(--text-muted); line-height:1.5; }
+
+    /* ── CTA Button ── */
+    .cta-wrap { padding: 0 24px; margin-top:4px; }
+
+    .cta-btn {
+      width:100%;
+      height:58px;
+      background: linear-gradient(135deg, #FFB800, #FFC930);
+      border:none; border-radius:16px;
+      font-family:'Barlow',sans-serif;
+      font-size:20px; font-weight:800;
+      color:#0d0d0d;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      box-shadow: 0 6px 28px rgba(255,184,0,0.45);
+      transition: transform .15s, box-shadow .15s;
+      letter-spacing:.2px;
+    }
+    .cta-btn:hover  { transform:translateY(-1px); box-shadow:0 10px 36px rgba(255,184,0,0.55); }
+    .cta-btn:active { transform:translateY(1px);  box-shadow:0 3px 16px rgba(255,184,0,0.35); }
+    .cta-btn svg { transition: transform .2s; }
+    .cta-btn:hover svg { transform:translateX(3px); }
+
+    /* ── Footer note ── */
+    .footer-note {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      margin-top:16px;
+      font-size:12px; color:rgba(255,255,255,0.3);
+    }
+    .footer-line { width:32px; height:1px; background:rgba(255,255,255,0.15); }
+
+    /* ── Responsive ── */
+    @media (max-width:420px) {
+      .phone { width:100vw; min-height:100dvh; border-radius:0; }
+    }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Scroll area -->
+  <div class="scroll">
+
+    <!-- Header -->
+    <div class="header">
+      <!-- Shield SVG -->
+      <div class="shield-wrap">
+        <svg width="64" height="70" viewBox="0 0 64 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 2L6 13V32C6 47.5 17.2 61.8 32 66C46.8 61.8 58 47.5 58 32V13L32 2Z"
+                fill="#FFB800" opacity="0.15" stroke="#FFB800" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M32 8L10 17.5V32C10 45.5 19.8 58 32 62C44.2 58 54 45.5 54 32V17.5L32 8Z"
+                fill="#FFB800" opacity="0.2"/>
+          <!-- ECG line inside shield -->
+          <polyline points="16,35 22,35 25,26 29,44 33,30 37,38 40,35 48,35"
+                    fill="none" stroke="#FFB800" stroke-width="2.8"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="logo-text"><span class="safe">Safe</span><span class="pulse">Pulse</span></div>
+
+      <div class="tagline">
+        <div class="tagline-line"></div>
+        Tu seguridad está en nuestras manos
+        <div class="tagline-line r"></div>
+      </div>
+    </div>
+
+    <!-- Section title -->
+    <div class="section-title">
+      <!-- person icon -->
+      <svg class="input-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFB800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <h2>Crea tu cuenta</h2>
+    </div>
+    <p class="section-sub">Completa tus datos para activar tu protección</p>
+
+    <!-- DNI -->
+    <div class="field">
+      <div class="field-label">DNI / Documento</div>
+      <div class="input-wrap valid" id="wrap-dni">
+        <span class="input-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+            <line x1="7" y1="15" x2="10" y2="15"/>
+            <line x1="14" y1="15" x2="17" y2="15"/>
+          </svg>
+        </span>
+        <input type="text" id="dni" placeholder="DNI, Cédula o Pasaporte" value="12345678" maxlength="15" oninput="validateDNI()"/>
+        <span class="status-icon" id="icon-dni">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </span>
+      </div>
+      <div class="field-msg ok" id="msg-dni">Documento válido</div>
+    </div>
+
+    <!-- Nombres -->
+    <div class="field">
+      <div class="field-label">Nombres</div>
+      <div class="input-wrap valid" id="wrap-nombres">
+        <span class="input-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+        <input type="text" id="nombres" placeholder="Tus nombres" value="Juan Carlos" oninput="validateNombres()"/>
+        <span class="status-icon" id="icon-nombres">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </span>
+      </div>
+      <div class="field-msg ok" id="msg-nombres">Nombres válidos</div>
+    </div>
+
+    <!-- Apellidos -->
+    <div class="field">
+      <div class="field-label">Apellidos</div>
+      <div class="input-wrap valid" id="wrap-apellidos">
+        <span class="input-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </span>
+        <input type="text" id="apellidos" placeholder="Tus apellidos" value="Pérez Gómez" oninput="validateApellidos()"/>
+        <span class="status-icon" id="icon-apellidos">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </span>
+      </div>
+      <div class="field-msg ok" id="msg-apellidos">Apellidos válidos</div>
+    </div>
+
+    <!-- Teléfono -->
+    <div class="field">
+      <div class="field-label">Número de Teléfono</div>
+      <div class="input-wrap" id="wrap-telefono">
+        <span class="input-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.6 4.51 2 2 0 0 1 3.58 2.34h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.93-1.93a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </span>
+        <input type="tel" id="telefono" placeholder="Ej: +51 999 123 456" oninput="validateTelefono()"/>
+        <span class="status-icon" id="icon-telefono"></span>
+      </div>
+      <div class="field-msg" id="msg-telefono"></div>
+    </div>
+
+    <!-- Correo -->
+    <div class="field">
+      <div class="field-label">Correo electrónico</div>
+      <div class="input-wrap invalid" id="wrap-email">
+        <span class="input-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </span>
+        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" value="juancarlos@" oninput="validateEmail()"/>
+        <span class="status-icon" id="icon-email">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </span>
+      </div>
+      <div class="field-msg err" id="msg-email">Ingresa un correo electrónico válido</div>
+    </div>
+
+    <!-- Info banner -->
+    <div class="info-banner">
+      <span class="info-banner-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFB800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <circle cx="12" cy="11" r="2" fill="#FFB800" stroke="none"/>
+          <line x1="12" y1="13" x2="12" y2="16" stroke="#FFB800" stroke-width="2.5"/>
+        </svg>
+      </span>
+      <div>
+        <h4>Tu información está protegida</h4>
+        <p>En SafePulse cuidamos tus datos y solo los usamos para tu seguridad.</p>
+      </div>
+    </div>
+
+  </div><!-- /scroll -->
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn" onclick="handleContinue()">
+      Continuar
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-note">
+    <div class="footer-line"></div>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    Conexión segura y cifrada
+    <div class="footer-line"></div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+  const okIcon = (color='#43a047') => `
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+    </svg>`;
+  const errIcon = () => `
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e53935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>`;
+
+  function setField(id, isValid, msgOk, msgErr) {
+    const wrap = document.getElementById('wrap-'+id);
+    const icon = document.getElementById('icon-'+id);
+    const msg  = document.getElementById('msg-'+id);
+    wrap.className = 'input-wrap ' + (isValid ? 'valid' : 'invalid');
+    icon.innerHTML = isValid ? okIcon() : errIcon();
+    msg.textContent = isValid ? msgOk : msgErr;
+    msg.className = 'field-msg ' + (isValid ? 'ok' : 'err');
+  }
+
+  function validateDNI() {
+    const v = document.getElementById('dni').value.trim();
+    const ok = v.length >= 5;
+    setField('dni', ok, 'Documento válido', 'Ingresa un documento válido (mín. 5 caracteres)');
+  }
+  function validateNombres() {
+    const v = document.getElementById('nombres').value.trim();
+    const ok = v.length >= 2;
+    setField('nombres', ok, 'Nombres válidos', 'Ingresa tus nombres completos');
+  }
+  function validateApellidos() {
+    const v = document.getElementById('apellidos').value.trim();
+    const ok = v.length >= 2;
+    setField('apellidos', ok, 'Apellidos válidos', 'Ingresa tus apellidos completos');
+  }
+  function validateTelefono() {
+    const v = document.getElementById('telefono').value.trim();
+    const ok = v.length >= 7;
+    setField('telefono', ok, 'Teléfono válido', 'Ingresa un número de teléfono válido');
+  }
+  function validateEmail() {
+    const v = document.getElementById('email').value;
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    setField('email', ok, 'Correo electrónico válido', 'Ingresa un correo electrónico válido');
+  }
+
+  function handleContinue() {
+    validateDNI();
+    validateNombres();
+    validateApellidos();
+    validateTelefono();
+    validateEmail();
+
+    const dni      = document.getElementById('dni').value.trim();
+    const nombres  = document.getElementById('nombres').value.trim();
+    const apellidos= document.getElementById('apellidos').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const email    = document.getElementById('email').value.trim();
+
+    const allValid = dni.length >= 5 &&
+                     nombres.length >= 2 &&
+                     apellidos.length >= 2 &&
+                     telefono.length >= 7 &&
+                     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!allValid) return;
+
+    // ── Save user profile to localStorage ──
+    const userProfile = {
+      dni, nombres, apellidos, telefono, email,
+      nombreCompleto: nombres + ' ' + apellidos,
+      registeredAt: new Date().toISOString()
+    };
+    try {
+      localStorage.setItem('safepulse_user', JSON.stringify(userProfile));
+    } catch(e) {}
+
+    // ── Navigate to permisos (or hub directly) ──
+    const phone = document.querySelector('.phone');
+    phone.style.opacity = '0';
+    setTimeout(() => {
+      window.location.href = 'safepulse-permisos (3).html';
+    }, 400);
+  }
+</script>
+</body>
+</html>

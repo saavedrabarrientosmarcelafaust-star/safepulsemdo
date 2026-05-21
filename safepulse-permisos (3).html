@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>SafePulse – Permisos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:       #FFB800;
+      --gold-light: #FFC930;
+      --gold-dim:   rgba(255,184,0,0.18);
+      --gold-glow:  rgba(255,184,0,0.45);
+      --bg:         #0b0b0b;
+      --card:       #131313;
+      --card-active:#181800;
+      --border:     #252525;
+      --text:       #ffffff;
+      --text-muted: rgba(255,255,255,0.55);
+    }
+
+    html, body {
+      min-height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    /* ── Phone frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      border-radius: 40px;
+      box-shadow: 0 0 0 1px #1e1e1e, 0 30px 80px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    /* ── Circuit board decoration top-left ── */
+    .circuit-tl, .circuit-tr {
+      position: absolute;
+      top: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .circuit-tl { left: 0; }
+    .circuit-tr { right: 0; transform: scaleX(-1); }
+
+    /* ── Radial glow behind shield ── */
+    .bg-glow {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+        rgba(255,184,0,0.18) 0%,
+        rgba(255,184,0,0.06) 45%,
+        transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Scroll area ── */
+    .scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 44px 22px 20px;
+      scrollbar-width: none;
+    }
+    .scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .shield-wrap {
+      margin-bottom: 4px;
+      animation: shield-pulse 2.8s ease-in-out infinite alternate;
+    }
+    @keyframes shield-pulse {
+      from { filter: drop-shadow(0 0 8px rgba(255,184,0,0.55)); }
+      to   { filter: drop-shadow(0 0 22px rgba(255,200,0,1.0)) drop-shadow(0 0 40px rgba(255,184,0,0.5)); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .shake-card {
+      animation: shake 0.4s ease-in-out !important;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: absolute;
+      bottom: 100px;
+      left: 22px;
+      right: 22px;
+      background: rgba(229, 57, 53, 0.95);
+      border: 1.5px solid #ff5252;
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(229,57,53,0.3);
+      backdrop-filter: blur(10px);
+      z-index: 200;
+      transform: translateY(150%);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+    .toast-container.show {
+      transform: translateY(0);
+    }
+    .toast-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.4;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    .logo-text {
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      font-style: italic;
+    }
+    .logo-text .safe  { color: #fff; }
+    .logo-text .pulse { color: var(--gold); }
+
+    .tagline {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      letter-spacing: .3px;
+    }
+
+    /* ── Section heading ── */
+    .section-head {
+      text-align: center;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 2;
+    }
+    .section-head h2 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .section-head p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    /* ── Permission cards ── */
+    .perm-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, background .25s;
+    }
+    .perm-card.granted {
+      border-color: rgba(255,184,0,0.45);
+      background: linear-gradient(135deg, #141200, #131313);
+    }
+    .perm-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 15% 50%,
+        rgba(255,184,0,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Icon circle with radar rings */
+    .icon-wrap {
+      width: 76px;
+      height: 76px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ring-a, .ring-b {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,184,0,0.22);
+    }
+    .ring-a { width: 76px; height: 76px; animation: rp 3s ease-in-out infinite; }
+    .ring-b { width: 54px; height: 54px; animation: rp 3s ease-in-out infinite .5s; }
+    @keyframes rp {
+      0%,100% { opacity:.3; } 50% { opacity:.75; }
+    }
+    .icon-bg {
+      width: 52px; height: 52px;
+      background: var(--gold);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      box-shadow: 0 4px 20px rgba(255,184,0,0.35);
+    }
+    .icon-bg svg { color: #0b0b0b; }
+
+    /* Text */
+    .perm-text h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .perm-text p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Allow button */
+    .allow-btn {
+      background: var(--gold);
+      border: none;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      flex-shrink: 0;
+      min-width: 76px;
+      transition: transform .15s, box-shadow .15s, background .2s;
+      box-shadow: 0 4px 16px rgba(255,184,0,0.3);
+    }
+    .allow-btn:hover  { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(255,184,0,0.45); }
+    .allow-btn:active { transform: translateY(1px); }
+    .allow-btn.granted {
+      background: #1e1e00;
+      border: 1.5px solid var(--gold);
+      box-shadow: none;
+    }
+    .allow-btn .btn-label {
+      font-family: 'Barlow', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: #0b0b0b;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .allow-btn.granted .btn-label { color: var(--gold); }
+    .allow-btn svg { color: #0b0b0b; }
+    .allow-btn.granted svg { color: var(--gold); }
+
+    /* ── CTA ── */
+    .cta-wrap {
+      padding: 10px 22px 18px;
+    }
+    .cta-btn {
+      width: 100%;
+      height: 62px;
+      background: linear-gradient(135deg, #FFB800, #FFC930);
+      border: none;
+      border-radius: 18px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #0b0b0b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 32px rgba(255,184,0,0.5);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cta-btn:hover  { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(255,184,0,0.65); }
+    .cta-btn:active { transform: translateY(1px);  box-shadow: 0 3px 16px rgba(255,184,0,0.35); }
+    .cta-btn svg { transition: transform .2s; }
+    .cta-btn:hover svg { transform: translateX(4px); }
+
+    @media (max-width: 420px) {
+      .phone { width: 100vw; min-height: 100dvh; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Radial glow -->
+  <div class="bg-glow"></div>
+
+  <!-- Circuit decorations -->
+  <svg class="circuit-tl" width="90" height="120" viewBox="0 0 90 120" fill="none">
+    <path d="M0 40 H30 V10 H60" stroke="#FFB800" stroke-width="1"/>
+    <path d="M0 70 H20 V50 H50 V30" stroke="#FFB800" stroke-width="1"/>
+    <circle cx="60" cy="10" r="3" fill="#FFB800"/>
+    <circle cx="50" cy="30" r="3" fill="#FFB800"/>
+    <rect x="27" y="7" width="6" height="6" stroke="#FFB800" stroke-width="1"/>
+  </svg>
+  <svg class="circuit-tr" width="90" height="120" viewBox="0 0 90 120" fill="none">
+    <path d="M0 40 H30 V10 H60" stroke="#FFB800" stroke-width="1"/>
+    <path d="M0 70 H20 V50 H50 V30" stroke="#FFB800" stroke-width="1"/>
+    <circle cx="60" cy="10" r="3" fill="#FFB800"/>
+    <circle cx="50" cy="30" r="3" fill="#FFB800"/>
+    <rect x="27" y="7" width="6" height="6" stroke="#FFB800" stroke-width="1"/>
+  </svg>
+
+  <div class="scroll">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="shield-wrap">
+        <svg width="72" height="78" viewBox="0 0 64 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 2L6 13V32C6 47.5 17.2 61.8 32 66C46.8 61.8 58 47.5 58 32V13L32 2Z"
+                fill="#FFB800" opacity="0.18" stroke="#FFB800" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M32 8L10 17.5V32C10 45.5 19.8 58 32 62C44.2 58 54 45.5 54 32V17.5L32 8Z"
+                fill="#FFB800" opacity="0.25"/>
+          <polyline points="16,35 22,35 25,26 29,44 33,30 37,38 40,35 48,35"
+                    fill="none" stroke="#FFB800" stroke-width="2.8"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="logo-text"><span class="safe">Safe</span><span class="pulse">Pulse</span></div>
+      <p class="tagline">Tu seguridad está en nuestras manos</p>
+    </div>
+
+    <!-- Section heading -->
+    <div class="section-head">
+      <h2>Permite los accesos necesarios</h2>
+      <p>Para protegerte correctamente en situaciones de emergencia, necesitamos algunos permisos esenciales.</p>
+    </div>
+
+    <!-- Card: Ubicación -->
+    <div class="perm-card" id="card-location">
+      <div class="icon-wrap">
+        <div class="ring-a"></div>
+        <div class="ring-b"></div>
+        <div class="icon-bg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="perm-text">
+        <h3>Acceso a Ubicación</h3>
+        <p>Permite compartir tu ubicación en tiempo real cuando estés en peligro.</p>
+      </div>
+      <button class="allow-btn" id="btn-location" onclick="grantPerm('location')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="btn-label">Permitir<br>acceso</span>
+      </button>
+    </div>
+
+    <!-- Card: Contactos -->
+    <div class="perm-card" id="card-contacts">
+      <div class="icon-wrap">
+        <div class="ring-a"></div>
+        <div class="ring-b"></div>
+        <div class="icon-bg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M20 0H4v2h16V0zM4 24h16v-2H4v2zM20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2.75c1.24 0 2.25 1.01 2.25 2.25S13.24 11.25 12 11.25 9.75 10.24 9.75 9 10.76 6.75 12 6.75zM17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="perm-text">
+        <h3>Acceso a Contactos</h3>
+        <p>Tus contactos recibirán alertas inmediatas para ayudar rápidamente.</p>
+      </div>
+      <button class="allow-btn" id="btn-contacts" onclick="grantPerm('contacts')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="btn-label">Permitir<br>acceso</span>
+      </button>
+    </div>
+
+    <!-- Card: Fotos y Videos -->
+    <div class="perm-card" id="card-media">
+      <div class="icon-wrap">
+        <div class="ring-a"></div>
+        <div class="ring-b"></div>
+        <div class="icon-bg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4z"/>
+            <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="perm-text">
+        <h3>Acceso a Fotos y Videos</h3>
+        <p>Permite enviar imágenes y videos mediante el chat de emergencia para informar mejor la situación.</p>
+      </div>
+      <button class="allow-btn" id="btn-media" onclick="grantPerm('media')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="btn-label">Permitir<br>acceso</span>
+      </button>
+    </div>
+
+  </div><!-- /scroll -->
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn" onclick="handleContinue()">
+      CONTINUAR
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Toast Notification Alert -->
+  <div class="toast-container" id="toast">
+    <span style="font-size: 20px;">⚠️</span>
+    <span class="toast-text" id="toast-msg">Activa todos los permisos para continuar.</span>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Fade-in transition on load
+    const phone = document.querySelector(".phone");
+    phone.style.opacity = "0";
+    setTimeout(() => {
+      phone.style.opacity = "1";
+    }, 50);
+  });
+
+  const granted = { location: false, contacts: false, media: false };
+
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toast-msg");
+    toastMsg.textContent = message;
+    toast.classList.add("show");
+
+    // Auto hide toast after 3 seconds
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  function grantPerm(id) {
+    granted[id] = !granted[id];
+    const btn  = document.getElementById('btn-' + id);
+    const card = document.getElementById('card-' + id);
+
+    if (granted[id]) {
+      btn.classList.add('granted');
+      card.classList.add('granted');
+      btn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+        </svg>
+        <span class="btn-label">Permitido</span>`;
+    } else {
+      btn.classList.remove('granted');
+      card.classList.remove('granted');
+      btn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="btn-label">Permitir<br>acceso</span>`;
+    }
+  }
+
+  function handleContinue() {
+    const all = Object.values(granted).every(Boolean);
+    if (!all) {
+      let ungrantedCount = 0;
+      ['location','contacts','media'].forEach(id => {
+        if (!granted[id]) {
+          ungrantedCount++;
+          const card = document.getElementById('card-' + id);
+
+          // Apply shake animation
+          card.classList.add('shake-card');
+          card.style.borderColor = '#e53935';
+
+          setTimeout(() => {
+            card.classList.remove('shake-card');
+          }, 400);
+
+          setTimeout(() => {
+            if (!granted[id]) card.style.borderColor = '';
+          }, 1500);
+        }
+      });
+
+      showToast(`Por favor, otorga los ${ungrantedCount} permisos restantes para continuar.`);
+    } else {
+      // Transition to dashboard
+      const phone = document.querySelector(".phone");
+      phone.style.opacity = "0";
+      setTimeout(() => {
+        window.location.href = "safepulse (5).html";
+      }, 400);
+    }
+  }
+</script>
+</body>
+</html>

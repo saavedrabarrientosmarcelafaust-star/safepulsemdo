@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SafePulse – Alerta Enviada</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ─── Reset & base ─── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  font-family: 'Exo 2', sans-serif;
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ─── Phone shell ─── */
+.phone {
+  width: 390px;
+  min-height: 844px;
+  margin: 0 auto;
+  background: #050505;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+/* ─── Dark map background ─── */
+.bg-map {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 60%, #1a0000 0%, #000 70%);
+}
+
+/* SVG circuit / road lines */
+.bg-map svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.35;
+}
+
+/* Red central glow behind card */
+.bg-glow-top {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(ellipse, rgba(220,0,0,0.35) 0%, transparent 70%);
+  z-index: 1;
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+/* Red glow around button */
+.bg-glow-btn {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(ellipse, rgba(200,0,0,0.4) 0%, transparent 65%);
+  z-index: 1;
+  animation: glowPulse 2s ease-in-out infinite reverse;
+}
+
+@keyframes glowPulse {
+  0%,100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Diagonal map lines */
+.map-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(25deg,  transparent 48%, #ff2200 48.5%, transparent 49%),
+    linear-gradient(-15deg, transparent 30%, #cc1100 30.5%, transparent 31%),
+    linear-gradient(60deg,  transparent 60%, #aa0000 60.5%, transparent 61%),
+    linear-gradient(-40deg, transparent 20%, #880000 20.5%, transparent 21%),
+    linear-gradient(80deg,  transparent 70%, #bb1100 70.5%, transparent 71%);
+}
+
+/* Golden particle dots */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.particles::before, .particles::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #f5c518 100%, transparent),
+    radial-gradient(1.5px 1.5px at 88% 12%, #f5c518 100%, transparent),
+    radial-gradient(1px 1px at 5% 55%,   #f5c51860 100%, transparent),
+    radial-gradient(1px 1px at 92% 70%,  #f5c51860 100%, transparent),
+    radial-gradient(1.5px 1.5px at 35% 6%, #f5c518 100%, transparent),
+    radial-gradient(1px 1px at 70% 90%,  #f5c51860 100%, transparent),
+    radial-gradient(1.5px 1.5px at 55% 95%, #f5c518 100%, transparent),
+    radial-gradient(1px 1px at 18% 82%,  #f5c51860 100%, transparent),
+    radial-gradient(1px 1px at 80% 40%,  #f5c51840 100%, transparent),
+    radial-gradient(1.5px 1.5px at 48% 2%, #f5c51880 100%, transparent);
+}
+
+/* ─── Content wrapper ─── */
+.content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 22px;
+  flex: 1;
+}
+
+/* ─── Header ─── */
+.header {
+  width: 100%;
+  padding: 36px 0 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Shield SVG icon */
+.shield-icon {
+  width: 52px;
+  height: 52px;
+}
+
+.logo-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.logo-text em {
+  color: #f5c518;
+  font-style: normal;
+}
+
+.tagline {
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 0.4px;
+}
+
+/* ─── Alert Card ─── */
+.alert-card {
+  width: 100%;
+  margin-top: 22px;
+  background: rgba(10,0,0,0.75);
+  border: 1.5px solid #cc1111;
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow:
+    0 0 0 1px rgba(255,40,40,0.15),
+    0 0 30px rgba(200,0,0,0.3),
+    inset 0 0 40px rgba(180,0,0,0.08);
+  backdrop-filter: blur(4px);
+  animation: cardGlow 2s ease-in-out infinite;
+}
+
+@keyframes cardGlow {
+  0%,100% { box-shadow: 0 0 0 1px rgba(255,40,40,0.15), 0 0 25px rgba(200,0,0,0.25), inset 0 0 30px rgba(180,0,0,0.06); }
+  50%      { box-shadow: 0 0 0 1px rgba(255,40,40,0.3),  0 0 50px rgba(200,0,0,0.45), inset 0 0 50px rgba(180,0,0,0.12); }
+}
+
+/* Big triangle icon at top of card */
+.card-triangle {
+  width: 64px;
+  height: 58px;
+  position: relative;
+  margin-bottom: 4px;
+}
+.card-triangle svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(255,60,60,0.9)); animation: triPulse 1.8s ease-in-out infinite; }
+@keyframes triPulse {
+  0%,100% { filter: drop-shadow(0 0 10px rgba(255,60,60,0.8)); }
+  50%      { filter: drop-shadow(0 0 28px rgba(255,60,60,1)); }
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.card-title .tri-inline {
+  width: 28px;
+  height: 25px;
+  flex-shrink: 0;
+}
+.card-title .tri-inline svg { width: 100%; height: 100%; }
+
+.card-danger {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff3333;
+  letter-spacing: 0.3px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: #bbb;
+  text-align: center;
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+/* Location row inside card */
+.card-location {
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.loc-pin {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.loc-text { flex: 1; }
+.loc-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #aaa;
+  margin-bottom: 3px;
+}
+.loc-addr {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+}
+.loc-precision {
+  font-size: 10px;
+  color: #666;
+  margin-top: 3px;
+}
+.loc-precision span { color: #00e676; }
+
+/* Mini map thumbnail */
+.loc-map-thumb {
+  width: 72px;
+  height: 64px;
+  border-radius: 10px;
+  background: #050d05;
+  border: 1px solid #1e2e1e;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.loc-map-thumb .thumb-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,180,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,180,0,0.08) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.loc-map-thumb .thumb-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 22px;
+  filter: drop-shadow(0 0 6px rgba(255,50,50,0.8));
+  animation: thumbPinPulse 1.5s ease-in-out infinite;
+}
+@keyframes thumbPinPulse {
+  0%,100% { filter: drop-shadow(0 0 5px rgba(255,50,50,0.7)); }
+  50%      { filter: drop-shadow(0 0 16px rgba(255,50,50,1)); }
+}
+.loc-map-thumb .thumb-ripple {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid rgba(255,50,50,0.6);
+  border-radius: 50%;
+  animation: thumbRipple 1.8s ease-out infinite;
+}
+@keyframes thumbRipple {
+  0%   { width: 8px; height: 8px; opacity: 1; }
+  100% { width: 50px; height: 50px; opacity: 0; }
+}
+
+/* Sound alert row */
+.card-sound {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 2px;
+}
+
+.sound-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  animation: soundWave 0.8s ease-in-out infinite alternate;
+}
+@keyframes soundWave {
+  from { opacity: 0.6; }
+  to   { opacity: 1; }
+}
+
+.sound-text {}
+.sound-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #eee;
+}
+.sound-sub {
+  font-size: 10.5px;
+  color: #777;
+  margin-top: 2px;
+}
+
+/* ─── Map / Pin zone ─── */
+.map-zone {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dotted trail from card down to button */
+.trail {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,80,80,0.7) 0px,
+    rgba(255,80,80,0.7) 5px,
+    transparent 5px,
+    transparent 11px
+  );
+  z-index: 2;
+}
+
+/* Big pulsing pin */
+.big-pin {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-body {
+  width: 42px;
+  height: 54px;
+  background: linear-gradient(145deg, #ff4444, #bb0000);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 0 3px rgba(255,50,50,0.4);
+  position: relative;
+  animation: bigPinPulse 1.5s ease-in-out infinite;
+}
+.pin-body::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+@keyframes bigPinPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(255,50,50,0.3), 0 0 20px rgba(255,50,50,0.6); }
+  50%      { box-shadow: 0 0 0 10px rgba(255,50,50,0.15), 0 0 50px rgba(255,50,50,1); }
+}
+
+/* Circular ripples around pin */
+.pin-ripples {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.pin-ripple {
+  position: absolute;
+  border: 1.5px solid rgba(255,50,50,0.55);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pinRipple 2.2s ease-out infinite;
+}
+.pin-ripple:nth-child(2) { animation-delay: 0.7s; }
+.pin-ripple:nth-child(3) { animation-delay: 1.4s; }
+
+@keyframes pinRipple {
+  0%   { width: 20px; height: 20px; opacity: 0.9; }
+  100% { width: 120px; height: 120px; opacity: 0; }
+}
+
+/* ─── Emergency Button ─── */
+.btn-zone {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  margin-bottom: 28px;
+}
+
+.emergency-btn {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Outer decorative ring */
+.emergency-btn::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,80,80,0.25);
+  animation: outerSpin 4s linear infinite;
+}
+.emergency-btn::after {
+  content: '';
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,80,80,0.12);
+  animation: outerSpin 6s linear infinite reverse;
+}
+@keyframes outerSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Metallic ring */
+.btn-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #3a0000, #880000, #cc0000, #ff4444,
+    #cc0000, #880000, #3a0000, #880000,
+    #cc0000, #ff4444, #cc0000, #3a0000
+  );
+  z-index: 0;
+  animation: btnGlow 2s ease-in-out infinite;
+}
+@keyframes btnGlow {
+  0%,100% { filter: blur(0px) brightness(1); }
+  50%      { filter: blur(1px) brightness(1.4); }
+}
+
+/* Button face */
+.btn-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #ff5555 0%, #cc0000 40%, #880000 70%, #500000 100%);
+  box-shadow:
+    inset 0 8px 20px rgba(255,180,180,0.2),
+    inset 0 -8px 20px rgba(0,0,0,0.5),
+    0 0 40px rgba(200,0,0,0.6);
+  z-index: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 50%;
+  animation: facePulse 2s ease-in-out infinite;
+}
+@keyframes facePulse {
+  0%,100% { box-shadow: inset 0 8px 20px rgba(255,180,180,0.2), inset 0 -8px 20px rgba(0,0,0,0.5), 0 0 35px rgba(200,0,0,0.5); }
+  50%      { box-shadow: inset 0 8px 20px rgba(255,180,180,0.3), inset 0 -8px 20px rgba(0,0,0,0.5), 0 0 70px rgba(255,50,50,0.8); }
+}
+
+.btn-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 0 20px rgba(255,200,200,0.3);
+  line-height: 1.2;
+  z-index: 2;
+}
+
+/* ─── Status Bar ─── */
+.status-bar {
+  width: 100%;
+  border-top: 1px solid #1a1a1a;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 16px 0 24px;
+  margin-top: auto;
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+
+.status-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background: #1e1e1e;
+}
+
+.status-icon { font-size: 20px; }
+
+.status-name {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ccc;
+}
+
+.status-dot-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00e676;
+  box-shadow: 0 0 6px #00e676;
+  animation: dotBlink 1.5s ease-in-out infinite;
+}
+@keyframes dotBlink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+.status-dot.blue   { background: #2196F3; box-shadow: 0 0 6px #2196F3; }
+.status-dot.orange { background: #ff9800; box-shadow: 0 0 6px #ff9800; }
+
+.status-val {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+.status-val.green  { color: #00e676; }
+.status-val.blue   { color: #2196F3; }
+.status-val.orange { color: #ff9800; }
+
+/* ─── Responsive: full width on mobile ─── */
+@media (max-width: 420px) {
+  .phone { width: 100%; min-height: 100dvh; }
+}
+@media (min-width: 421px) {
+  body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    background: #111;
+    padding: 30px 0;
+  }
+  .phone {
+    border-radius: 44px;
+    border: 1px solid #222;
+    box-shadow: 0 0 80px rgba(200,0,0,0.15), 0 40px 100px rgba(0,0,0,0.9);
+    min-height: 844px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Background layers -->
+  <div class="bg-map">
+    <svg viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <!-- Road / circuit lines -->
+      <g stroke="#550000" stroke-width="1" fill="none" opacity="0.6">
+        <line x1="0"   y1="320" x2="390" y2="280"/>
+        <line x1="0"   y1="420" x2="390" y2="460"/>
+        <line x1="0"   y1="560" x2="390" y2="510"/>
+        <line x1="50"  y1="0"   x2="120" y2="844"/>
+        <line x1="200" y1="0"   x2="260" y2="844"/>
+        <line x1="330" y1="0"   x2="280" y2="844"/>
+        <line x1="0"   y1="160" x2="390" y2="200"/>
+        <line x1="0"   y1="700" x2="390" y2="660"/>
+      </g>
+      <g stroke="#330000" stroke-width="0.5" fill="none" opacity="0.4">
+        <line x1="0"  y1="80"  x2="390" y2="100"/>
+        <line x1="0"  y1="240" x2="390" y2="220"/>
+        <line x1="0"  y1="490" x2="390" y2="540"/>
+        <line x1="0"  y1="780" x2="390" y2="740"/>
+        <line x1="80"  y1="0"  x2="140" y2="844"/>
+        <line x1="240" y1="0"  x2="180" y2="844"/>
+        <line x1="360" y1="0"  x2="350" y2="844"/>
+      </g>
+    </svg>
+  </div>
+  <div class="map-lines"></div>
+  <div class="particles"></div>
+  <div class="bg-glow-top"></div>
+  <div class="bg-glow-btn"></div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-row">
+        <!-- Shield icon built in SVG -->
+        <svg class="shield-icon" viewBox="0 0 52 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="shieldGrad" x1="0" y1="0" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f5c518"/>
+              <stop offset="100%" stop-color="#d4a000"/>
+            </linearGradient>
+          </defs>
+          <path d="M26 2 L48 12 L48 30 C48 44 38 54 26 57 C14 54 4 44 4 30 L4 12 Z" fill="url(#shieldGrad)"/>
+          <!-- Heartbeat line -->
+          <polyline points="10,30 16,30 20,20 24,40 28,22 32,36 36,30 42,30" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="logo-text">Safe<em>Pulse</em></div>
+      </div>
+      <div class="tagline">Tu seguridad está en nuestras manos</div>
+    </div>
+
+    <!-- Alert Card -->
+    <div class="alert-card">
+
+      <!-- Top triangle icon -->
+      <div class="card-triangle">
+        <svg viewBox="0 0 64 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,4 62,54 2,54" fill="none" stroke="#ff3333" stroke-width="3" stroke-linejoin="round"/>
+          <text x="32" y="44" text-anchor="middle" fill="#fff" font-size="26" font-weight="900" font-family="Exo 2, sans-serif">!</text>
+        </svg>
+      </div>
+
+      <!-- Title row -->
+      <div class="card-title">
+        <div class="tri-inline">
+          <svg viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="14,2 27,23 1,23" fill="none" stroke="#ff3333" stroke-width="2.2" stroke-linejoin="round"/>
+            <text x="14" y="20" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="Exo 2, sans-serif">!</text>
+          </svg>
+        </div>
+        ALERTA ENVIADA
+      </div>
+
+      <div class="card-danger">Alguien está en peligro</div>
+
+      <div class="card-desc">
+        Tu ubicación está siendo compartida<br>en tiempo real con tus contactos.
+      </div>
+
+      <!-- Location row -->
+      <div class="card-location">
+        <svg class="loc-pin" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C7.58 2 4 5.58 4 10c0 6.5 8 16 8 16s8-9.5 8-16c0-4.42-3.58-8-8-8z" fill="#e01c1c"/>
+          <circle cx="12" cy="10" r="3.5" fill="#fff"/>
+        </svg>
+        <div class="loc-text">
+          <div class="loc-label">UBICACIÓN EN TIEMPO REAL</div>
+          <div class="loc-addr">Av. Siempre Viva 742,<br>Ciudad de México</div>
+          <div class="loc-precision">Precisión: <span>Alta</span> · Actualizado ahora</div>
+        </div>
+        <div class="loc-map-thumb">
+          <div class="thumb-grid"></div>
+          <div class="thumb-ripple"></div>
+          <div class="thumb-pin">📍</div>
+        </div>
+      </div>
+
+      <!-- Sound row -->
+      <div class="card-sound">
+        <span class="sound-icon">🔊</span>
+        <div class="sound-text">
+          <div class="sound-title">ALERTA SONORA ACTIVADA</div>
+          <div class="sound-sub">Se notificó a todos tus contactos y usuarios cercanos.</div>
+        </div>
+      </div>
+
+      <!-- Actions group -->
+      <div class="card-actions" style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 16px; z-index: 10;">
+        <button class="action-btn chat-btn" style="width: 100%; background: linear-gradient(135deg, #ff3333, #d32f2f); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-family: 'Exo 2', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(255,51,51,0.4); transition: all 0.3s;">
+          💬 VER DETALLES Y CHAT EN VIVO
+        </button>
+        <button class="action-btn cancel-btn" style="width: 100%; background: rgba(255,255,255,0.06); color: #ff6b6b; border: 1.5px dashed rgba(255,107,107,0.3); border-radius: 12px; padding: 10px; font-weight: 600; font-family: 'Exo 2', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.3s;">
+          ✖ CANCELAR ALERTA DE PÁNICO
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Map / Pin zone -->
+    <div class="map-zone">
+      <div class="trail"></div>
+      <div class="big-pin">
+        <div class="pin-ripples">
+          <div class="pin-ripple"></div>
+          <div class="pin-ripple"></div>
+          <div class="pin-ripple"></div>
+        </div>
+        <div class="pin-body"></div>
+      </div>
+    </div>
+
+    <!-- Emergency Button -->
+    <div class="btn-zone">
+      <div class="emergency-btn">
+        <div class="btn-ring"></div>
+        <div class="btn-face">
+          <div class="btn-label">EMERGENCIA<br>ACTIVADA</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-icon">📍</div>
+      <div class="status-name">GPS</div>
+      <div class="status-dot-row">
+        <div class="status-dot"></div>
+        <div class="status-val green">ACTIVO</div>
+      </div>
+    </div>
+    <div class="status-item">
+      <div class="status-icon">🔷</div>
+      <div class="status-name">BLUETOOTH</div>
+      <div class="status-dot-row">
+        <div class="status-dot blue"></div>
+        <div class="status-val blue">CONECTADO</div>
+      </div>
+    </div>
+    <div class="status-item">
+      <div class="status-icon">📡</div>
+      <div class="status-name">CONEXIÓN</div>
+      <div class="status-dot-row">
+        <div class="status-dot orange"></div>
+        <div class="status-val orange">ACTIVA</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const phone = document.querySelector(".phone");
+      
+      // Fade in screen smoothly
+      setTimeout(() => {
+        phone.style.opacity = "1";
+      }, 50);
+
+      // Personalization
+      const savedName = localStorage.getItem("safepulse_nombres");
+      if (savedName) {
+        const cardDesc = document.querySelector(".card-desc");
+        if (cardDesc) {
+          cardDesc.innerHTML = `Tu ubicación está siendo compartida<br>en tiempo real con los contactos de <strong style="color:#ff5555">${savedName}</strong>.`;
+        }
+      }
+
+      // Audio Synth Setup (Web Audio API)
+      let audioCtx = null;
+      function playBeep(freq, duration) {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      // Continuous emergency beacon alert sound
+      playBeep(987.77, 0.15);
+      setTimeout(() => playBeep(880, 0.15), 150);
+
+      const alertSoundInterval = setInterval(() => {
+        playBeep(987.77, 0.15);
+        setTimeout(() => playBeep(880, 0.15), 150);
+      }, 3000);
+
+      // Buttons and Navigation
+      const chatBtn = document.querySelector(".chat-btn");
+      const cancelBtn = document.querySelector(".cancel-btn");
+      const emergencyBtn = document.querySelector(".emergency-btn");
+
+      function navigateTo(url) {
+        clearInterval(alertSoundInterval);
+        phone.style.opacity = "0";
+        setTimeout(() => {
+          window.location.href = url;
+        }, 400);
+      }
+
+      if (chatBtn) {
+        chatBtn.addEventListener("click", () => {
+          playBeep(600, 0.15);
+          navigateTo("emergencia (2).html");
+        });
+      }
+
+      if (emergencyBtn) {
+        emergencyBtn.addEventListener("click", () => {
+          playBeep(600, 0.15);
+          navigateTo("emergencia (2).html");
+        });
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          clearInterval(alertSoundInterval);
+          // Play a "cancellation" chime
+          playBeep(523.25, 0.15);
+          setTimeout(() => playBeep(392.00, 0.25), 100);
+
+          // Add a custom toast feedback
+          const toast = document.createElement("div");
+          toast.style.cssText = `
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: #ff5555;
+            border: 1.5px solid #ff3333;
+            border-radius: 20px;
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 0 20px rgba(255, 50, 50, 0.4);
+            text-align: center;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            opacity: 0;
+          `;
+          toast.textContent = "🚨 ALERTA DESACTIVADA";
+          document.body.appendChild(toast);
+          
+          setTimeout(() => { toast.style.opacity = "1"; }, 50);
+
+          setTimeout(() => {
+            toast.style.opacity = "0";
+            navigateTo("safepulse (5).html");
+          }, 1500);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

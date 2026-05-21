@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SafePulse - Tu seguridad está en nuestras manos</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card2: #161616;
+    --red: #e01c1c;
+    --red-glow: #ff2222;
+    --red-dim: #8b0000;
+    --yellow: #f5c518;
+    --yellow-dark: #d4a800;
+    --blue-accent: #00aaff;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+    --text-muted: #666666;
+    --border: #2a2a2a;
+    --green: #00e676;
+    --blue-bt: #2196F3;
+    --orange: #ff9800;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: #050505;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 0;
+  }
+
+  .phone-wrapper {
+    display: flex;
+    gap: 0;
+    max-width: 900px;
+    width: 100%;
+    background: var(--bg-primary);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(224, 28, 28, 0.15), 0 30px 80px rgba(0,0,0,0.8);
+    border: 1px solid #222;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+  }
+
+  /* ===== LEFT PANEL ===== */
+  .left-panel {
+    width: 45%;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    min-height: 860px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 10px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+  }
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #d4a800, #f5c518);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .logo-text span { color: var(--yellow); }
+
+  .bell-icon {
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .bell-icon::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 1px solid var(--bg-primary);
+  }
+
+  .tagline {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Alert Box */
+  .alert-box {
+    margin: 12px 16px;
+    background: linear-gradient(135deg, #1a0000 0%, #2d0000 50%, #1a0000 100%);
+    border: 1.5px solid #5a0000;
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(224, 28, 28, 0.2), inset 0 0 30px rgba(180, 0, 0, 0.1);
+  }
+
+  .alert-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(200,0,0,0.15) 0%, transparent 70%);
+  }
+
+  .alert-triangle {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 10px;
+    background: linear-gradient(135deg, #cc1111, #ff3333);
+    clip-path: polygon(50% 5%, 95% 90%, 5% 90%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulseTriangle 1.5s ease-in-out infinite;
+  }
+  .alert-triangle::after {
+    content: '!';
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  @keyframes pulseTriangle {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(255,50,50,0.6)); }
+    50% { filter: drop-shadow(0 0 20px rgba(255,50,50,1)); }
+  }
+
+  .alert-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .alert-subtitle {
+    color: var(--red-glow);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .alert-desc {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Map Area */
+  .map-area {
+    margin: 10px 16px;
+    height: 170px;
+    background: linear-gradient(135deg, #0d1a0d 0%, #0a120a 100%);
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #1e2e1e;
+  }
+
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,180,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,0,0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .map-grid2 {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,0,0,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .map-roads {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(45deg, transparent 30%, rgba(0,120,0,0.07) 30%, rgba(0,120,0,0.07) 32%, transparent 32%),
+      linear-gradient(-20deg, transparent 20%, rgba(0,100,0,0.05) 20%, rgba(0,100,0,0.05) 22%, transparent 22%),
+      linear-gradient(80deg, transparent 40%, rgba(0,80,0,0.06) 40%, rgba(0,80,0,0.06) 42%, transparent 42%);
+  }
+
+  .map-pin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    z-index: 3;
+  }
+
+  .map-pin-icon {
+    width: 28px;
+    height: 36px;
+    background: linear-gradient(135deg, #cc1111, #ff4444);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 0 20px rgba(255,50,50,0.8);
+    animation: pinPulse 1.5s ease-in-out infinite;
+  }
+  .map-pin-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  @keyframes pinPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255,50,50,0.7); }
+    50% { box-shadow: 0 0 35px rgba(255,50,50,1), 0 0 60px rgba(255,50,50,0.4); }
+  }
+
+  .map-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255,50,50,0.5);
+    border-radius: 50%;
+    animation: ripple 2s ease-out infinite;
+  }
+  .map-ripple:nth-child(2) { animation-delay: 0.7s; }
+  .map-ripple:nth-child(3) { animation-delay: 1.4s; }
+
+  @keyframes ripple {
+    0% { width: 30px; height: 30px; opacity: 1; transform: translate(-50%, -50%); }
+    100% { width: 110px; height: 110px; opacity: 0; transform: translate(-50%, -50%); }
+  }
+
+  .map-dot-trail {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,80,80,0.6));
+    transform: rotate(-20deg);
+    transform-origin: left center;
+  }
+
+  .location-info {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+  .location-info strong {
+    display: block;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .location-info .addr { color: var(--text-primary); font-size: 10.5px; font-weight: 600; }
+  .location-info .prec { color: var(--text-muted); font-size: 9px; margin-top: 3px; }
+  .location-info .prec span { color: var(--green); }
+
+  .map-controls {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .map-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-weight: 700;
+  }
+
+  /* Emergency Button */
+  .emergency-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 14px 0 10px;
+    gap: 10px;
+  }
+
+  .emergency-btn {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ff4444, #cc0000 60%, #880000);
+    border: 4px solid #ff2222;
+    box-shadow:
+      0 0 0 8px rgba(200,0,0,0.15),
+      0 0 0 16px rgba(200,0,0,0.08),
+      0 0 40px rgba(255,50,50,0.5),
+      inset 0 4px 12px rgba(255,150,150,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    animation: btnPulse 2s ease-in-out infinite;
+    position: relative;
+  }
+
+  .emergency-btn::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,80,80,0.3);
+    animation: outerRing 2s ease-in-out infinite;
+  }
+
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 0 0 8px rgba(200,0,0,0.15), 0 0 0 16px rgba(200,0,0,0.08), 0 0 30px rgba(255,50,50,0.4), inset 0 4px 12px rgba(255,150,150,0.3); }
+    50% { box-shadow: 0 0 0 12px rgba(200,0,0,0.2), 0 0 0 24px rgba(200,0,0,0.08), 0 0 60px rgba(255,50,50,0.7), inset 0 4px 12px rgba(255,150,150,0.3); }
+  }
+
+  @keyframes outerRing {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+
+  .emergency-btn-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .sound-alert {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--red-glow);
+    font-weight: 600;
+  }
+
+  /* Status Bar */
+  .status-bar {
+    margin: 0 16px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .status-item .label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+  .status-item .value {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .value.green { color: var(--green); }
+  .value.blue { color: var(--blue-bt); }
+  .value.orange { color: var(--orange); }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 10px 0 16px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .nav-item.active { opacity: 1; }
+  .nav-item .nav-icon { font-size: 18px; }
+  .nav-item .nav-label { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; }
+  .nav-item.active .nav-label { color: var(--yellow); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px rgba(245,197,24,0.5)); }
+
+  /* ===== RIGHT PANEL ===== */
+  .right-panel {
+    width: 55%;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .right-header {
+    padding: 18px 18px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .right-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+  }
+
+  .live-dot {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .live-dot span {
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .live-dot small { font-size: 9px; color: var(--red); font-weight: 700; }
+
+  /* Contacts scroll area */
+  .contacts-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2a transparent;
+  }
+
+  .contact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .contact-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2a2a2a;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .contact-info { flex: 1; }
+  .contact-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .badge-emergency {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(220,0,0,0.2);
+    border: 1px solid rgba(220,0,0,0.5);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #ff4444;
+    letter-spacing: 0.5px;
+  }
+
+  .contact-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+    align-self: flex-start;
+  }
+
+  .bell-ring {
+    font-size: 18px;
+    animation: ring 1s ease-in-out infinite;
+    margin-left: 6px;
+  }
+  @keyframes ring {
+    0%, 100% { transform: rotate(-8deg); }
+    25% { transform: rotate(8deg); }
+    50% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+  }
+
+  .msg-line {
+    font-size: 11.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .msg-sub {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .location-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .pin-small {
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(224,28,28,0.5);
+  }
+
+  .location-text {
+    flex: 1;
+    font-size: 10px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .mini-map {
+    width: 52px;
+    height: 42px;
+    background: #0a140a;
+    border-radius: 6px;
+    border: 1px solid #1e2e1e;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .mini-map::after {
+    content: '📍';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 14px;
+  }
+
+  .btn-location {
+    width: 100%;
+    background: linear-gradient(135deg, var(--yellow-dark), var(--yellow));
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 9px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-location:hover {
+    background: linear-gradient(135deg, var(--yellow), #ffe55c);
+    box-shadow: 0 4px 16px rgba(245,197,24,0.3);
+  }
+
+  /* Nearby users */
+  .nearby-section {
+    margin: 4px 14px 10px;
+    background: var(--bg-card);
+    border: 1px solid #1e2e40;
+    border-radius: 14px;
+    padding: 12px;
+  }
+
+  .nearby-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .nearby-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--blue-accent);
+  }
+  .nearby-sub {
+    font-size: 9.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .nearby-count {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card2);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  .nearby-count .cnt {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .radar-mini {
+    width: 50px;
+    height: 42px;
+    background: #050d1a;
+    border-radius: 6px;
+    border: 1px solid #0d2040;
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  /* Chat area */
+  .chat-area {
+    border-top: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .chat-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .chat-bubble {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0 10px 10px 10px;
+    padding: 5px 10px;
+    max-width: 80%;
+  }
+  .chat-bubble .sender {
+    font-size: 9px;
+    color: var(--blue-accent);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .chat-bubble.system .sender { color: var(--yellow); }
+  .chat-bubble .text {
+    font-size: 10.5px;
+    color: var(--text-secondary);
+  }
+  .chat-bubble .time {
+    font-size: 8.5px;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: 2px;
+  }
+
+  .chat-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 6px 10px;
+    margin-top: 2px;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .chat-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .mic-btn {
+    width: 28px;
+    height: 28px;
+    background: var(--blue-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  /* Responsive */
+  @media (max-width: 650px) {
+    body { padding: 0; }
+    .phone-wrapper { flex-direction: column; border-radius: 0; }
+    .left-panel, .right-panel { width: 100%; }
+    .left-panel { min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+
+  <!-- ===== LEFT PANEL ===== -->
+  <div class="left-panel">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="logo">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">Safe<span>Pulse</span></div>
+      </div>
+      <div class="bell-icon">🔔</div>
+    </div>
+
+    <div class="tagline">Tu seguridad está en nuestras manos</div>
+
+    <!-- Alert Box -->
+    <div class="alert-box">
+      <div class="alert-triangle"></div>
+      <div class="alert-title">ALERTA ENVIADA</div>
+      <div class="alert-subtitle">Alguien está en peligro</div>
+      <div class="alert-desc">Tu ubicación está siendo compartida<br>en tiempo real con tus contactos.</div>
+    </div>
+
+    <!-- Map -->
+    <div class="map-area">
+      <div class="map-grid"></div>
+      <div class="map-grid2"></div>
+      <div class="map-roads"></div>
+      <div class="map-ripple"></div>
+      <div class="map-ripple"></div>
+      <div class="map-ripple"></div>
+      <div class="map-dot-trail"></div>
+      <div class="map-pin">
+        <div class="map-pin-icon"></div>
+      </div>
+      <div class="location-info">
+        <strong>UBICACIÓN EN TIEMPO REAL</strong>
+        <div class="addr">Av. Siempre Viva 742,</div>
+        <div class="addr">Ciudad de México</div>
+        <div class="prec">Precisión: <span>Alta</span> • Actualizado ahora</div>
+      </div>
+      <div class="map-controls">
+        <div class="map-btn">⊕</div>
+        <div class="map-btn">+</div>
+        <div class="map-btn">−</div>
+      </div>
+    </div>
+
+    <!-- Emergency Button -->
+    <div class="emergency-btn-wrapper">
+      <div class="emergency-btn">
+        <div class="emergency-btn-text">EMERGENCIA<br>ACTIVADA</div>
+      </div>
+      <div class="sound-alert">🔊 Alerta sonora activada</div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="label">📍 GPS</div>
+        <div class="value green">ACTIVO</div>
+      </div>
+      <div class="status-item">
+        <div class="label">🔷 BLUETOOTH</div>
+        <div class="value blue">CONECTADO</div>
+      </div>
+      <div class="status-item">
+        <div class="label">📡 CONEXIÓN</div>
+        <div class="value orange">ACTIVA</div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🛡️</div>
+        <div class="nav-label">Inicio</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">👥</div>
+        <div class="nav-label">Contactos</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">Chat</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-label">Ajustes</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <div class="right-panel">
+
+    <!-- Right Header -->
+    <div class="right-header">
+      <h2>ALERTA RECIBIDA POR TUS CONTACTOS</h2>
+      <div class="live-dot">
+        <span></span>
+        <small>EN VIVO</small>
+      </div>
+    </div>
+
+    <!-- Contacts Scroll -->
+    <div class="contacts-scroll">
+
+      <!-- Contact 1 -->
+      <div class="contact-card">
+        <div class="contact-header">
+          <div class="avatar">👩</div>
+          <div class="contact-info">
+            <div class="contact-name">Laura Martínez</div>
+            <div class="badge-emergency">⚠️ ALERTA DE EMERGENCIA</div>
+          </div>
+          <div class="contact-time">Ahora</div>
+          <div class="bell-ring">🔔</div>
+        </div>
+        <div class="msg-line">Alguien está en peligro</div>
+        <div class="msg-sub">Laura activó una alerta de emergencia.</div>
+        <div class="location-row">
+          <div class="pin-small"></div>
+          <div class="location-text">Ubicación en tiempo real<br><strong style="color:#fff">Av. Siempre Viva 742, Ciudad de México</strong></div>
+          <div class="mini-map"></div>
+        </div>
+        <button class="btn-location">VER UBICACIÓN</button>
+      </div>
+
+      <!-- Contact 2 -->
+      <div class="contact-card">
+        <div class="contact-header">
+          <div class="avatar">👨</div>
+          <div class="contact-info">
+            <div class="contact-name">Carlos Hernández</div>
+            <div class="badge-emergency">⚠️ ALERTA DE EMERGENCIA</div>
+          </div>
+          <div class="contact-time">Ahora</div>
+          <div class="bell-ring">🔔</div>
+        </div>
+        <div class="msg-line">Alguien está en peligro</div>
+        <div class="msg-sub">Laura activó una alerta de emergencia.</div>
+        <div class="location-row">
+          <div class="pin-small"></div>
+          <div class="location-text">Ubicación en tiempo real<br><strong style="color:#fff">Av. Siempre Viva 742, Ciudad de México</strong></div>
+          <div class="mini-map"></div>
+        </div>
+        <button class="btn-location">VER UBICACIÓN</button>
+      </div>
+
+      <!-- Contact 3 -->
+      <div class="contact-card">
+        <div class="contact-header">
+          <div class="avatar">👩‍🦱</div>
+          <div class="contact-info">
+            <div class="contact-name">Ana Rodríguez</div>
+            <div class="badge-emergency">⚠️ ALERTA DE EMERGENCIA</div>
+          </div>
+          <div class="contact-time">Ahora</div>
+          <div class="bell-ring">🔔</div>
+        </div>
+        <div class="msg-line">Alguien está en peligro</div>
+        <div class="msg-sub">Laura activó una alerta de emergencia.</div>
+        <div class="location-row">
+          <div class="pin-small"></div>
+          <div class="location-text">Ubicación en tiempo real<br><strong style="color:#fff">Av. Siempre Viva 742, Ciudad de México</strong></div>
+          <div class="mini-map"></div>
+        </div>
+        <button class="btn-location">VER UBICACIÓN</button>
+      </div>
+
+      <!-- Nearby Users -->
+      <div class="nearby-section">
+        <div class="nearby-header">
+          <span style="font-size:16px">👥</span>
+          <div class="nearby-title">USUARIOS CERCANOS CON SAFEPULSE</div>
+        </div>
+        <div class="nearby-sub">También han recibido la alerta para ayudarte</div>
+        <div class="nearby-count">
+          <div class="cnt">8 usuarios cercanos<br>han sido notificados</div>
+          <div class="radar-mini">🗺️</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-area" style="border-top:1px solid var(--border); padding:10px 14px; display:flex; flex-direction:column; gap:8px;">
+      <div class="chat-messages-container" style="flex: 1; overflow-y: auto; max-height: 200px; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; scrollbar-width: thin; scrollbar-color: #2a2a2a transparent;">
+        <div class="chat-msg">
+          <div class="chat-avatar">🛡️</div>
+          <div class="chat-bubble system">
+            <div class="sender">Sistema SafePulse</div>
+            <div class="text">Ya enviamos tu ubicación a tus contactos.</div>
+            <div class="time">10:26 AM</div>
+          </div>
+        </div>
+
+        <div class="chat-msg">
+          <div class="chat-avatar">👩</div>
+          <div class="chat-bubble">
+            <div class="sender">Laura Martínez</div>
+            <div class="text">Ayuda en camino. 🚗</div>
+            <div class="time">10:27 AM</div>
+          </div>
+        </div>
+
+        <div class="chat-msg">
+          <div class="chat-avatar">👨</div>
+          <div class="chat-bubble">
+            <div class="sender">Carlos Hernández</div>
+            <div class="text">Estamos cerca, mantén la calma.</div>
+            <div class="time">10:27 AM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="chat-input-bar">
+        <input class="chat-input" type="text" placeholder="Escribe un mensaje...">
+        <div class="chat-icons">
+          <span style="cursor:pointer;">📷</span>
+          <span style="cursor:pointer;">🖼️</span>
+        </div>
+        <div class="mic-btn" style="background: var(--blue-accent);">🎤</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const phoneWrapper = document.querySelector(".phone-wrapper");
+      
+      // Smooth fade-in
+      setTimeout(() => {
+        phoneWrapper.style.opacity = "1";
+      }, 50);
+
+      // Web Audio API Synthesizer
+      let audioCtx = null;
+      function playBeep(freq, duration) {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      // Continuous Alert Beacon Sound (Very subtle background beeping)
+      playBeep(987.77, 0.1);
+      const alertInterval = setInterval(() => {
+        playBeep(987.77, 0.1);
+      }, 5000);
+
+      // Personalize UI
+      const savedName = localStorage.getItem("safepulse_nombres") || "Laura";
+      const alertSub = document.querySelector(".alert-subtitle");
+      if (alertSub && savedName !== "Laura") {
+        alertSub.innerHTML = `<strong style="color: var(--red-glow)">${savedName}</strong> está en peligro`;
+      }
+
+      // Update contact card descriptions to match owner
+      const subs = document.querySelectorAll(".contact-card .msg-sub");
+      const contactNames = ["Laura", "Carlos", "Ana"];
+      subs.forEach((sub, i) => {
+        const cName = contactNames[i] || "Contacto";
+        sub.innerHTML = `${cName} recibió la alerta de <strong style="color:var(--yellow)">${savedName}</strong> y está en camino.`;
+      });
+
+      // --- Bilateral Chat Simulation ---
+      const chatInput = document.querySelector(".chat-input");
+      const micBtn = document.querySelector(".mic-btn");
+      const chatContainer = document.querySelector(".chat-messages-container");
+
+      // Scroll to bottom initially
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Dynamic Send Button icon change
+      if (chatInput && micBtn) {
+        chatInput.addEventListener("input", () => {
+          if (chatInput.value.trim() !== "") {
+            micBtn.textContent = "✈️";
+            micBtn.style.background = "var(--yellow)";
+            micBtn.style.color = "#000";
+          } else {
+            micBtn.textContent = "🎤";
+            micBtn.style.background = "var(--blue-accent)";
+            micBtn.style.color = "#fff";
+          }
+        });
+
+        // Trigger send on Enter
+        chatInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            sendChat();
+          }
+        });
+
+        // Trigger send on click
+        micBtn.addEventListener("click", () => {
+          if (micBtn.textContent === "✈️") {
+            sendChat();
+          } else {
+            playBeep(600, 0.1);
+            showToast("🎙️ Grabando nota de voz simulada...");
+          }
+        });
+      }
+
+      function sendChat() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        chatInput.value = "";
+        micBtn.textContent = "🎤";
+        micBtn.style.background = "var(--blue-accent)";
+        micBtn.style.color = "#fff";
+
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
+        // Append user bubble
+        const userMsg = document.createElement("div");
+        userMsg.style.cssText = "align-self: flex-end; justify-content: flex-end; width: 100%; display: flex;";
+        userMsg.innerHTML = `
+          <div class="chat-bubble" style="background: linear-gradient(135deg, var(--red-dim), var(--red)); border-color: rgba(255, 34, 34, 0.4); border-radius: 10px 10px 0 10px; margin-left: auto;">
+            <div class="sender" style="color: var(--yellow); text-align: right;">Tú</div>
+            <div class="text" style="color: #fff;">${text}</div>
+            <div class="time" style="color: rgba(255, 255, 255, 0.6); text-align: right; margin-top: 3px;">${timeStr}</div>
+          </div>
+        `;
+        chatContainer.appendChild(userMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        playBeep(650, 0.12);
+
+        // Auto support response after 2 seconds
+        setTimeout(() => {
+          const replies = [
+            { name: "Carlos Hernández", avatar: "👨", text: "¡Tranquilo! Ya nos estamos moviendo hacia tu posición. Quédate ahí." },
+            { name: "Laura Martínez", avatar: "👩", text: "Acabo de alertar al cuadrante de serenazgo también. ¡Mantente a salvo!" },
+            { name: "Ana Rodríguez", avatar: "👩‍🦱", text: "Voy con Carlos en el auto, estamos muy cerca. ¿Estás en un lugar seguro?" },
+            { name: "Sistema SafePulse", avatar: "🛡️", text: "Alerta confirmada por contactos. Patrulla de asistencia en camino." }
+          ];
+
+          const randomReply = replies[Math.floor(Math.random() * replies.length)];
+          const replyMsg = document.createElement("div");
+          replyMsg.className = "chat-msg";
+          
+          let senderColor = "var(--blue-accent)";
+          let systemClass = "";
+          if (randomReply.name.includes("Sistema")) {
+            senderColor = "var(--yellow)";
+            systemClass = "system";
+          }
+
+          replyMsg.innerHTML = `
+            <div class="chat-avatar">${randomReply.avatar}</div>
+            <div class="chat-bubble ${systemClass}">
+              <div class="sender" style="color: ${senderColor};">${randomReply.name}</div>
+              <div class="text">${randomReply.text}</div>
+              <div class="time">${timeStr}</div>
+            </div>
+          `;
+
+          chatContainer.appendChild(replyMsg);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+
+          playBeep(700, 0.15);
+        }, 2000);
+      }
+
+      // --- SOS Cancellation triggers ---
+      const cancelTriggerNav = document.querySelector(".bottom-nav .nav-item"); // Inicio is first child
+      const cancelTriggerBtn = document.querySelector(".left-panel .emergency-btn");
+
+      function deactivateSOS() {
+        clearInterval(alertInterval);
+        
+        // Cancellation chime
+        playBeep(523.25, 0.15);
+        setTimeout(() => playBeep(392.00, 0.25), 100);
+
+        showToast("🚨 ALERTA CANCELADA - ENTORNO SEGURO");
+
+        phoneWrapper.style.opacity = "0";
+
+        setTimeout(() => {
+          window.location.href = "safepulse (5).html";
+        }, 1500);
+      }
+
+      if (cancelTriggerNav) {
+        cancelTriggerNav.addEventListener("click", (e) => {
+          e.preventDefault();
+          deactivateSOS();
+        });
+      }
+
+      if (cancelTriggerBtn) {
+        cancelTriggerBtn.addEventListener("click", () => {
+          deactivateSOS();
+        });
+      }
+
+      // --- Contact Location Triggers ---
+      const locationButtons = document.querySelectorAll(".btn-location");
+      locationButtons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const card = e.target.closest(".contact-card");
+          const cName = card ? card.querySelector(".contact-name").textContent : "Contacto";
+          playBeep(880, 0.15);
+          showToast(`📍 Centrando mapa en la ubicación de ${cName}...`);
+        });
+      });
+
+      // --- Helper Toast ---
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.style.cssText = `
+          position: absolute;
+          bottom: 120px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.95);
+          color: #ff5555;
+          border: 1.5px solid #ff3333;
+          border-radius: 20px;
+          padding: 12px 24px;
+          font-size: 13px;
+          font-weight: 700;
+          z-index: 9999;
+          box-shadow: 0 0 20px rgba(255, 50, 50, 0.4);
+          text-align: center;
+          white-space: nowrap;
+          transition: all 0.3s ease;
+          opacity: 0;
+        `;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => { toast.style.opacity = "1"; }, 50);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          setTimeout(() => toast.remove(), 300);
+        }, 2500);
+      }
+    });
+  </script>
+</body>
+</html>
